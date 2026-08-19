@@ -1,0 +1,32 @@
+﻿version: '3.8'
+
+services:
+  app:
+    build: .
+    ports:
+      - '4000:4000'
+    environment:
+      - NODE_ENV=production
+      - PORT=4000
+      - DATABASE_URL=postgresql://checkpoint:checkpoint_pass@db:5432/checkpoint_db?sslmode=disable
+      - JWT_SECRET=prod_jwt_super_secret_key_2026_x9
+      - QR_HMAC_SECRET=prod_qr_hmac_secret_key_2026_k8
+      - ORGANIZER_PROVISION_KEY=checkpoint_org_key_2026
+      - CLIENT_ORIGIN=*
+    depends_on:
+      - db
+
+  db:
+    image: postgres:16-alpine
+    environment:
+      - POSTGRES_USER=checkpoint
+      - POSTGRES_PASSWORD=checkpoint_pass
+      - POSTGRES_DB=checkpoint_db
+    ports:
+      - '5432:5432'
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./server/migrations/001_init.sql:/docker-entrypoint-initdb.d/001_init.sql
+
+volumes:
+  pgdata:

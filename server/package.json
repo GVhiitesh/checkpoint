@@ -1,0 +1,27 @@
+{
+  "name": "checkpoint-server",
+  "version": "1.0.0",
+  "description": "CHECKPOINT — Concurrency-Safe Event Check-In System (Backend)",
+  "type": "module",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js",
+    "dev": "node src/index.js",
+    "dev:2": "cross-env PORT=4001 node src/index.js",
+    "migrate": "node scripts/migrate.mjs",
+    "seed": "node scripts/seed_demo.mjs",
+    "test": "node scripts/test_suite.mjs",
+    "proof": "node scripts/proof.mjs"
+  },
+  "dependencies": {
+    "@google/generative-ai": "^0.24.0",
+    "bcryptjs": "^3.0.2",
+    "cors": "^2.8.5",
+    "cross-env": "^7.0.3",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "jsonwebtoken": "^9.0.2",
+    "pg": "^8.13.3",
+    "socket.io": "^4.8.1"
+  }
+}
