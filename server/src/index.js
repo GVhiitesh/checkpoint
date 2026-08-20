@@ -50,10 +50,13 @@ app.use((err, req, res, next) => {
   res.status(err.httpStatus || 500).json({ error: err.message || 'internal_error' });
 });
 
+import { initDatabase } from './lib/db.js';
+
 const server = http.createServer(app);
 const io = attachSocket(server);
 app.set('io', io);
 
-server.listen(config.port, () => {
+server.listen(config.port, async () => {
   console.log(`CheckPoint server listening on :${config.port}`);
+  await initDatabase();
 });
