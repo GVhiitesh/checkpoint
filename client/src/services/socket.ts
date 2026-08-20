@@ -1,6 +1,8 @@
 import { io, Socket } from 'socket.io-client';
 
-const SOCKET_URL = import.meta.env.VITE_SOCKET_URL ?? (import.meta.env.DEV ? 'http://localhost:4000' : window.location.origin);
+const SOCKET_URL = 
+  import.meta.env.VITE_SOCKET_URL || 
+  (import.meta.env.DEV ? 'http://localhost:4000' : 'https://checkpoint-pfl2.onrender.com');
 
 let socket: Socket | null = null;
 
