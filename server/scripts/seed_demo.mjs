@@ -23,32 +23,34 @@ async function seed() {
   // 1. Organizers
   const orgRes = await pool.query(`
     INSERT INTO users (email, password_hash, name, role)
-    VALUES ('organizer@checkpoint.io', $1, 'Alex Carter (Lead Organizer)', 'organizer')
+    VALUES ('organizer@vitstudent.ac.in', $1, 'Alex Carter (Lead Organizer)', 'organizer')
     ON CONFLICT (email) DO UPDATE SET password_hash = $1
     RETURNING id;
   `, [passHashDefault]);
   const organizerId = orgRes.rows[0].id;
 
+  // Also support organizer@checkpoint.io for backward compatibility
   await pool.query(`
     INSERT INTO users (email, password_hash, name, role)
-    VALUES ('organizer@checkpoint.internal', $1, 'Alex Carter (Lead Organizer)', 'organizer')
+    VALUES ('organizer@checkpoint.io', $1, 'Alex Carter (Lead Organizer)', 'organizer')
     ON CONFLICT (email) DO UPDATE SET password_hash = $1;
-  `, [passHashAdmin]);
+  `, [passHashDefault]);
 
   // 2. Attendees
   const attRes = await pool.query(`
     INSERT INTO users (email, password_hash, name, role)
-    VALUES ('attendee@checkpoint.io', $1, 'Jane Doe (Attendee)', 'attendee')
+    VALUES ('attendee@vitstudent.ac.in', $1, 'Jane Doe (Attendee)', 'attendee')
     ON CONFLICT (email) DO UPDATE SET password_hash = $1
     RETURNING id;
   `, [passHashDefault]);
   const attendeeId = attRes.rows[0].id;
 
+  // Also support attendee@checkpoint.io
   await pool.query(`
     INSERT INTO users (email, password_hash, name, role)
-    VALUES ('alex.rivera@example.com', $1, 'Alex Rivera (Attendee)', 'attendee')
+    VALUES ('attendee@checkpoint.io', $1, 'Jane Doe (Attendee)', 'attendee')
     ON CONFLICT (email) DO UPDATE SET password_hash = $1;
-  `, [passHashPass]);
+  `, [passHashDefault]);
 
   // 3. Demo Event 1 (AI Summit)
   const evDate = new Date(Date.now() + 86400000 * 2).toISOString();

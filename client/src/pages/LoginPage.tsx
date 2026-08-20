@@ -21,31 +21,38 @@ export const LoginPage: React.FC = () => {
     setLoading(true);
     setError(null);
 
+    const cleanEmail = email.trim().toLowerCase();
+    if (!cleanEmail.endsWith('@vitstudent.ac.in')) {
+      setError('Access restricted: Only official VIT student emails (@vitstudent.ac.in) are authorized.');
+      setLoading(false);
+      return;
+    }
+
     try {
       if (isSignup) {
         const res = await api.post('/api/auth/signup', {
           name,
-          email,
+          email: cleanEmail,
           password,
         });
         login(res.token, res.user);
       } else {
         const res = await api.post('/api/auth/login', {
-          email,
+          email: cleanEmail,
           password,
         });
         login(res.token, res.user);
       }
       navigate('/events');
     } catch (err: any) {
-      setError(err?.data?.error || err?.message || 'Authentication failed');
+      setError(err?.data?.message || err?.data?.error || err?.message || 'Authentication failed');
     } finally {
       setLoading(false);
     }
   };
 
   const handleQuickDemo = async (demoRole: UserRole) => {
-    const demoEmail = demoRole === 'organizer' ? 'organizer@checkpoint.io' : 'attendee@checkpoint.io';
+    const demoEmail = demoRole === 'organizer' ? 'organizer@vitstudent.ac.in' : 'attendee@vitstudent.ac.in';
     const demoPass = 'password123';
     setEmail(demoEmail);
     setPassword(demoPass);
@@ -80,7 +87,7 @@ export const LoginPage: React.FC = () => {
         }
         navigate('/events');
       } catch (err2: any) {
-        setError(err2?.data?.error || err2?.message || 'Demo login failed. Please try again.');
+        setError(err2?.data?.message || err2?.data?.error || err2?.message || 'Demo login failed. Please try again.');
       }
     } finally {
       setLoading(false);
@@ -100,7 +107,7 @@ export const LoginPage: React.FC = () => {
         <div className="flex justify-center mb-4">
           <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-slate-900/80 border border-blue-500/30 text-blue-400 text-xs font-mono font-medium shadow-lg shadow-blue-500/10 backdrop-blur-md">
             <Zap className="w-3.5 h-3.5 text-blue-400 animate-pulse" />
-            <span>CHECKPOINT HIGH-CONCURRENCY</span>
+            <span>VIT CAMPUS EVENT ACCESS</span>
           </div>
         </div>
 
@@ -113,10 +120,11 @@ export const LoginPage: React.FC = () => {
           <div className="flex items-center justify-between mb-6 pb-4 border-b border-white/[0.06]">
             <div>
               <h2 className="text-2xl font-black text-white tracking-tight">
-                {isSignup ? 'Create Account' : 'Welcome Back'}
+                {isSignup ? 'Student Signup' : 'Student & Staff Login'}
               </h2>
-              <p className="text-xs font-mono text-slate-400 mt-1">
-                {isSignup ? 'Attendee registration pass' : 'Sign in to access events'}
+              <p className="text-xs font-mono text-slate-400 mt-1 flex items-center gap-1">
+                <span>Domain:</span>
+                <span className="text-blue-400 font-bold">@vitstudent.ac.in</span>
               </p>
             </div>
             <div className="w-11 h-11 rounded-2xl bg-blue-600/15 border border-blue-500/30 flex items-center justify-center text-blue-400 shadow-inner shadow-blue-500/20 group-hover:scale-105 transition-transform">
@@ -184,7 +192,12 @@ export const LoginPage: React.FC = () => {
             )}
 
             <div>
-              <label className="block text-xs font-mono text-slate-300 mb-1.5">Email Address</label>
+              <div className="flex items-center justify-between mb-1.5">
+                <label className="block text-xs font-mono text-slate-300">VIT Email Address</label>
+                <span className="text-[10px] font-mono text-blue-400 font-bold bg-blue-500/10 px-2 py-0.5 rounded-full border border-blue-500/20">
+                  @vitstudent.ac.in only
+                </span>
+              </div>
               <div className="relative">
                 <Mail className="w-4 h-4 text-slate-500 absolute left-3.5 top-3.5" />
                 <input
@@ -192,7 +205,7 @@ export const LoginPage: React.FC = () => {
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder="organizer@checkpoint.io"
+                  placeholder="your.name2026@vitstudent.ac.in"
                   className="w-full pl-10 pr-4 py-3 rounded-2xl bg-slate-950/90 border border-white/[0.08] text-sm text-white placeholder-slate-500 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all"
                 />
               </div>
@@ -225,7 +238,7 @@ export const LoginPage: React.FC = () => {
               disabled={loading}
               className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-600 hover:from-blue-500 hover:to-indigo-500 text-white text-sm font-extrabold flex items-center justify-center gap-2 shadow-xl shadow-blue-600/30 transition-all disabled:opacity-50 mt-3 cursor-pointer active:scale-[0.99] hover:shadow-blue-500/50"
             >
-              <span>{loading ? 'Processing...' : isSignup ? 'Create Attendee Account' : 'Sign In'}</span>
+              <span>{loading ? 'Processing...' : isSignup ? 'Create VIT Student Pass' : 'Sign In'}</span>
               <ArrowRight className="w-4 h-4" />
             </button>
           </form>
@@ -234,7 +247,7 @@ export const LoginPage: React.FC = () => {
           <div className="mt-6 pt-5 border-t border-white/[0.06]">
             <div className="text-[11px] font-mono text-slate-400 text-center mb-3 flex items-center justify-center gap-1.5">
               <Zap className="w-3.5 h-3.5 text-amber-400" />
-              <span>Instant 1-Click Evaluator Access</span>
+              <span>Instant Evaluator Access (@vitstudent.ac.in)</span>
             </div>
             <div className="grid grid-cols-2 gap-2.5">
               <button
@@ -255,7 +268,7 @@ export const LoginPage: React.FC = () => {
                 className="px-3.5 py-3 rounded-2xl bg-slate-950/90 hover:bg-slate-900 border border-emerald-500/30 hover:border-emerald-500/70 text-xs font-mono text-emerald-400 transition-all flex flex-col items-center justify-center gap-0.5 group cursor-pointer shadow-sm hover:shadow-emerald-500/20 active:scale-95"
               >
                 <span className="font-extrabold flex items-center gap-1">
-                  <span>🎫</span> Attendee
+                  <span>🎫</span> VIT Attendee
                 </span>
                 <span className="text-[10px] text-slate-500 group-hover:text-slate-400">Pass & 30s Token</span>
               </button>

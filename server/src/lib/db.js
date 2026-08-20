@@ -54,14 +54,14 @@ export async function initDatabase() {
         const passHash = await bcrypt.hash('password123', 10);
         const orgRes = await pool.query(`
           INSERT INTO users (email, password_hash, name, role)
-          VALUES ('organizer@checkpoint.io', $1, 'Alex Carter (Lead Organizer)', 'organizer')
-          ON CONFLICT DO NOTHING RETURNING id;
+          VALUES ('organizer@vitstudent.ac.in', $1, 'Alex Carter (Lead Organizer)', 'organizer')
+          ON CONFLICT (email) DO UPDATE SET password_hash = $1 RETURNING id;
         `, [passHash]);
 
         const attRes = await pool.query(`
           INSERT INTO users (email, password_hash, name, role)
-          VALUES ('attendee@checkpoint.io', $1, 'Jane Doe (Attendee)', 'attendee')
-          ON CONFLICT DO NOTHING RETURNING id;
+          VALUES ('attendee@vitstudent.ac.in', $1, 'Jane Doe (Attendee)', 'attendee')
+          ON CONFLICT (email) DO UPDATE SET password_hash = $1 RETURNING id;
         `, [passHash]);
 
         if (orgRes.rows.length > 0 && attRes.rows.length > 0) {
