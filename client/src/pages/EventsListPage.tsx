@@ -385,23 +385,52 @@ export const EventsListPage: React.FC = () => {
                 />
               </div>
 
+              {/* Manual Unlimited Capacity Typing Space */}
               <div>
                 <div className="flex items-center justify-between mb-1.5">
-                  <label className="block text-xs font-mono text-slate-300">Max Capacity Limit</label>
-                  <span className="text-xs font-mono font-bold text-blue-400">{newEventCapacity} Seats</span>
+                  <label className="block text-xs font-mono text-slate-300">
+                    Total Seat Capacity <span className="text-blue-400 font-bold">*</span>
+                  </label>
+                  <span className="text-[11px] font-mono text-slate-400">
+                    Enter any quantity
+                  </span>
                 </div>
-                <input
-                  type="range"
-                  min="1"
-                  max="500"
-                  value={newEventCapacity}
-                  onChange={(e) => setNewEventCapacity(Number(e.target.value))}
-                  className="w-full h-2 bg-slate-950 rounded-lg appearance-none cursor-pointer accent-blue-500"
-                />
-                <div className="flex justify-between text-[10px] font-mono text-slate-500 mt-1">
-                  <span>1 (Strict VIP)</span>
-                  <span>100</span>
-                  <span>500</span>
+                <div className="relative">
+                  <Users className="w-4 h-4 text-slate-500 absolute left-3.5 top-3" />
+                  <input
+                    type="number"
+                    min="1"
+                    required
+                    value={newEventCapacity || ''}
+                    onChange={(e) => setNewEventCapacity(Math.max(1, parseInt(e.target.value, 10) || 0))}
+                    placeholder="e.g. 1500"
+                    className="w-full pl-10 pr-16 py-2.5 rounded-xl bg-slate-950/90 border border-white/[0.08] text-sm font-mono text-white placeholder-slate-500 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all font-bold"
+                  />
+                  <div className="absolute right-3.5 top-2.5 text-xs font-mono text-slate-400 font-medium pointer-events-none">
+                    Seats
+                  </div>
+                </div>
+
+                {/* Quick Increment Presets */}
+                <div className="flex items-center gap-1.5 mt-2">
+                  <span className="text-[10px] font-mono text-slate-500 mr-1">Quick Add:</span>
+                  {[50, 250, 1000, 5000].map((amount) => (
+                    <button
+                      key={amount}
+                      type="button"
+                      onClick={() => setNewEventCapacity((prev) => (Number(prev) || 0) + amount)}
+                      className="px-2 py-1 rounded-lg bg-slate-900/80 hover:bg-blue-600/20 border border-white/[0.06] hover:border-blue-500/30 text-[10px] font-mono text-slate-300 hover:text-blue-400 transition-all cursor-pointer"
+                    >
+                      +{amount.toLocaleString()}
+                    </button>
+                  ))}
+                  <button
+                    type="button"
+                    onClick={() => setNewEventCapacity(50)}
+                    className="px-2 py-1 rounded-lg bg-slate-900/80 hover:bg-slate-800 border border-white/[0.06] text-[10px] font-mono text-slate-400 hover:text-slate-200 transition-all cursor-pointer ml-auto"
+                  >
+                    Reset
+                  </button>
                 </div>
               </div>
 
