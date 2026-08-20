@@ -5,6 +5,7 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import { config } from './lib/config.js';
 import { attachSocket } from './lib/socket.js';
+import { initDatabase } from './lib/db.js';
 
 import { authRouter } from './routes/auth.js';
 import { eventsRouter } from './routes/events.js';
@@ -49,8 +50,6 @@ app.use((err, req, res, next) => {
   console.error('[error]', err);
   res.status(err.httpStatus || 500).json({ error: err.message || 'internal_error' });
 });
-
-import { initDatabase } from './lib/db.js';
 
 const server = http.createServer(app);
 const io = attachSocket(server);
